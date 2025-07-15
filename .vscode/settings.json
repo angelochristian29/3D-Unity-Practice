@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "NCE_Game.sln"
+    "dotnet.defaultSolution": "NCE_Game.sln",
+    "editor.codeLens": false
 }
