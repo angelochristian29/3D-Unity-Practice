@@ -160,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
     public float attackDelay = 0.4f;
     public float attackSpeed = 1f;
     public int attackDamage = 1;
-    //public LayerMask attackLayer;
+    public LayerMask attackLayer;
 
     public GameObject hitEffect;
     public AudioClip swordSwing;
@@ -209,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
     void AttackRaycast()
     {
         // cast ray from camera in forward direction, output raycasthit obj at attack distance and apply attack layer
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, attackDistance))
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
         {
             HitTarget(hit.point);
 

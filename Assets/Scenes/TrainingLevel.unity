@@ -377,6 +377,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 519420031}
+  animator: {fileID: 942997841}
+  audioSourceSwing: {fileID: 720252568}
+  audioSourceHit: {fileID: 720252568}
   walkSpeed: 6
   runSpeed: 12
   jumpPower: 7
@@ -390,6 +393,9 @@ MonoBehaviour:
   attackDelay: 0.4
   attackSpeed: 1
   attackDamage: 1
+  attackLayer:
+    serializedVersion: 2
+    m_Bits: 64
   hitEffect: {fileID: 5334228485563152753, guid: 83401f4e788c3af4397cc02270b72679, type: 3}
   swordSwing: {fileID: 8300000, guid: 9211755ba1f441f499b2c6dc5f1e5430, type: 3}
   hitSound: {fileID: 8300000, guid: b66e0f85d09f9a64ba242274d7000876, type: 3}
@@ -430,7 +436,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: dafcde09080829a4ab17ca6a41af6809, type: 2}
   m_audioClip: {fileID: 8300000, guid: 9211755ba1f441f499b2c6dc5f1e5430, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -526,7 +532,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: dafcde09080829a4ab17ca6a41af6809, type: 2}
   m_audioClip: {fileID: 8300000, guid: b66e0f85d09f9a64ba242274d7000876, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
