@@ -8,8 +8,9 @@ public class PlayerMovement : MonoBehaviour
 {
     // Variables to determine movement
     public Camera playerCamera;
-    Animator animator;
-    AudioSource audioSource;
+    public Animator animator;
+    public AudioSource audioSourceSwing;
+    public AudioSource audioSourceHit;
 
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
@@ -109,6 +110,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Attack();
         }
+
+        SetAnimations();
     }
 
     // ---------- //
@@ -157,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
     public float attackDelay = 0.4f;
     public float attackSpeed = 1f;
     public int attackDamage = 1;
-    public LayerMask attackLayer;
+    //public LayerMask attackLayer;
 
     public GameObject hitEffect;
     public AudioClip swordSwing;
@@ -181,8 +184,8 @@ public class PlayerMovement : MonoBehaviour
         Invoke(nameof(ResetAttack), attackSpeed);
         Invoke(nameof(AttackRaycast), attackDelay);
 
-        audioSource.pitch = 1;
-        audioSource.PlayOneShot(swordSwing);
+        audioSourceSwing.pitch = 1;
+        audioSourceSwing.PlayOneShot(swordSwing);
 
         if (attackCount == 0)
         {
@@ -206,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
     void AttackRaycast()
     {
         // cast ray from camera in forward direction, output raycasthit obj at attack distance and apply attack layer
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, attackDistance))
         {
             HitTarget(hit.point);
 
@@ -220,11 +223,11 @@ public class PlayerMovement : MonoBehaviour
     void HitTarget(Vector3 pos)
     {
         // when hitting something play hit sound
-        audioSource.pitch = 1;
-        audioSource.PlayOneShot(hitSound);
+        audioSourceHit.pitch = 1;
+        audioSourceHit.PlayOneShot(hitSound);
 
         // create knife hit mark and destroy after 20 seconds
-        GameObject GO = Instantiate(hitEffect, pos, Quaternion.identity);
-        Destroy(GO, 20);
+        // GameObject GO = Instantiate(hitEffect, pos, Quaternion.identity);
+        // Destroy(GO, 20);
     }
 }
