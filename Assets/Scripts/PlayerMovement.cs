@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
 {
     // Variables to determine movement
     public Camera playerCamera;
+    Animator animator;
+    AudioSource audioSource;
+
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
     private float def_walk_speed, def_run_speed; // to change speed in editor
@@ -100,5 +104,127 @@ public class PlayerMovement : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
+
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            Attack();
+        }
+    }
+
+    // ---------- //
+    // ANIMATIONS //
+    // ---------- //
+
+    public const string IDLE = "Idle";
+    public const string WALK = "Walk";
+    public const string ATTACK1 = "Attack 1";
+    public const string ATTACK2 = "Attack 2";
+
+    string currentAnimationState;
+
+    public void ChangeAnimationState(string newState)
+    {
+        // STOP THE SAME ANIMATION FROM INTERRUPTING WITH ITSELF
+        if (currentAnimationState == newState) return;
+
+        // Play animation
+        currentAnimationState = newState;
+        animator.CrossFadeInFixedTime(currentAnimationState, 0.2f);
+    }
+
+    void SetAnimations()
+    {
+        // if not attacking
+        if (!attacking)
+        {
+            if (moveDirection.x == 0 && moveDirection.z == 0)
+            {
+                ChangeAnimationState(IDLE);
+            }
+            else
+            {
+                ChangeAnimationState(WALK);
+            }
+        }
+    }
+
+    // ------------------- //
+    // ATTACKING BEHAVIOUR //
+    // ------------------- //
+
+    [Header("Attacking")]
+    public float attackDistance = 3f;
+    public float attackDelay = 0.4f;
+    public float attackSpeed = 1f;
+    public int attackDamage = 1;
+    public LayerMask attackLayer;
+
+    public GameObject hitEffect;
+    public AudioClip swordSwing;
+    public AudioClip hitSound;
+
+    bool attacking = false;
+    bool readyToAttack = true;
+    int attackCount;
+
+    public void Attack()
+    {
+        // Debug.Log("Attacking");
+        // return;
+
+        if (!readyToAttack || attacking) return;
+
+        readyToAttack = false;
+        attacking = true;
+
+        // reset variables afer attacking wait until attack speed time then send attack raycast and wait until attack delay
+        Invoke(nameof(ResetAttack), attackSpeed);
+        Invoke(nameof(AttackRaycast), attackDelay);
+
+        audioSource.pitch = 1;
+        audioSource.PlayOneShot(swordSwing);
+
+        if (attackCount == 0)
+        {
+            // if you haven't attacked play attack anim
+            ChangeAnimationState(ATTACK1);
+            attackCount++;
+        }
+        else
+        {
+            ChangeAnimationState(ATTACK2);
+            attackCount = 0;
+        }
+    }
+
+    void ResetAttack()
+    {
+        attacking = false;
+        readyToAttack = true;
+    }
+
+    void AttackRaycast()
+    {
+        // cast ray from camera in forward direction, output raycasthit obj at attack distance and apply attack layer
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
+        {
+            HitTarget(hit.point);
+
+            if (hit.transform.TryGetComponent<Actor>(out Actor T))
+            {
+                T.TakeDamage(attackDamage);
+            }
+        }
+    }
+
+    void HitTarget(Vector3 pos)
+    {
+        // when hitting something play hit sound
+        audioSource.pitch = 1;
+        audioSource.PlayOneShot(hitSound);
+
+        // create knife hit mark and destroy after 20 seconds
+        GameObject GO = Instantiate(hitEffect, pos, Quaternion.identity);
+        Destroy(GO, 20);
     }
 }
